@@ -1,0 +1,103 @@
+Atmin Sheth Personal Information
+
+Atmin Sheth is a software engineer specializing in artificial intelligence. He can be reached at phone number 713-550-6281 or email atdevmn@gmail.com. Atmin maintains active LinkedIn and GitHub profiles. He graduated in December 2023 with a Bachelor of Science degree in Software Engineering from The University of Texas at Dallas.
+
+Atmin Sheth past Employment
+
+Atmin Sheth works as an AI Engineer at eXp Realty from March 2023 to May 2025. He is a dynamic software engineer and AI specialist with hands-on experience across the full development lifecycle including front-end development, back-end development, and testing. Atmin is passionate about building AI-powered proof of concepts that streamline real estate processes, enhance agent workflows, and deliver tangible business value.
+
+Atmin Sheth AI Development Achievements
+
+Atmin Sheth led the development of 6 AI-driven proof-of-concepts with 3 approved for production including a house-building chatbot. He delivered AI solutions for onboarding, document error detection, and personal report analysis via chatbots. Atmin fine-tuned text-to-SQL models achieving 95% accuracy for the Agent Platform responses. He optimized text-to-SQL models using prompt engineering and the cosine algorithm for precise semantic query understanding.
+
+Atmin Sheth Frontend Development Skills
+
+Atmin Sheth built a React event calendar integrated with Google Calendar styled using React Calendar for visual appeal which improved search time by 50%. He built a communication bridge between Flutter UI and backend enabling real-time event-driven interactions. Atmin handled full-stack tasks for eXp agents including front-end features and user interface development.
+
+Atmin Sheth Backend Development Experience
+
+Atmin Sheth has extensive experience with SQL model integration for accurate support systems. He validated 500+ API call logs using SQL to ensure payload integrity and troubleshoot discrepancies. Atmin uses PostgreSQL and MongoDB for database management and built backend services with FastAPI. He designed conversational flows to guide backend responses based on user interaction patterns.
+
+Atmin Sheth Cloud Infrastructure Skills
+
+Atmin Sheth engineered and optimized AWS infrastructure for high availability including setting up load balancing and auto-scaling groups resulting in zero unplanned outages for the past year. He uses AWS DynamoDB for storing user responses and S3 Buckets for document storage with high availability and increased fault tolerance. Atmin manages traffic flow through load balancing applications.
+
+Atmin Sheth Docker Containerization
+
+Atmin Sheth runs DocAI in Docker containers for stable connections and hosting on the cloud. He has extensive experience with containerization technologies for reliable deployment and scaling of applications in production environments.
+
+Atmin Sheth Chatbot Development
+
+Atmin Sheth leveraged Botpress to create chatbots that streamlined data input via API cutting manual entry by 75%. He designed conversational flows to guide backend responses based on user interaction. Atmin performed advanced prompt engineering for ChatGPT plugins to detect and correct mismatched data fields.
+
+Atmin Sheth Machine Learning Models
+
+Atmin Sheth trained a computer vision model to identify and flag document issues with fine-tuning for accuracy. He has experience with model training, performance analysis, and deployment of machine learning solutions in production environments.
+
+Atmin Sheth Argo Scheduler Project
+
+Atmin Sheth developed the Argo Scheduler as his senior project at UT Dallas from January 2023 to May 2023. This automated task scheduler can automate tasks like maintenance and tests for systems using cron expressions, Quartz scheduler, and Java Spring Boot. The project was built with Java and Spring Boot providing RESTful APIs for managing calendar events and schedules efficiently.
+
+Atmin Sheth EmotionGPT Project
+
+Atmin Sheth led the EmotionGPT project for AI Society Mentorship at UT Dallas from February 2023 to May 2023. He led a team of four in creating an advanced speech-based emotion detection model. The team achieved 95.5% training accuracy and 92.9% test accuracy using pitch intensity evaluation and spectrogram analysis for emotion recognition.
+
+Atmin Sheth LangPortal Project
+
+Atmin Sheth architected LangPortal for AI Society Mentorship at UT Dallas from September 2022 to November 2022. This language learning platform leveraged advanced transformer tokenizers for seamless English-to-Spanish translations. The project achieved a 54 BLEU score indicating high translation accuracy and was deployed on AWS SageMaker with HuggingFace integration.
+
+Atmin Sheth Shopping Cart Project
+
+Atmin Sheth created a Shopping Cart project as a personal project in March 2022. This e-commerce website applied React and Material UI knowledge using a Fake Shopping API. The project implemented cart functionality to add and remove items and calculate total prices with automated UI design through data structure algorithms.
+
+Atmin Sheth YJA App Project
+
+Atmin Sheth developed the YJA App for Young Jains of America Non-Profit from September 2021 to June 2022. He implemented a secure payment solution via the Stripe API for over 750 users preventing multiple accidental charges. Atmin designed a real-time notification system that alerts security teams when users need immediate assistance.
+
+Atmin Sheth is most proud of his work on the onboarding JoinFast at eXp Realty, he has worked on the connecting to frontend to backend database 
+
+Atmin Sheth has worked on creating prompt and storing responses given from the user, making decision for the next prompt to be shown
+
+Atmin Sheth Programming Languages
+
+Atmin Sheth is proficient in multiple programming languages including Java, C++, C#, Python, JavaScript, TypeScript, Git, Data Structures, and Bash scripting for various development needs and system administration tasks.
+
+Atmin Sheth Frameworks and Development Tools
+
+Atmin Sheth uses React, Node.js, Material UI, .NET, Expo, Next.js, Botpress, GitHub Copilot, and HuggingFace for development projects and AI integration. He has experience with these frameworks across multiple projects and production environments.
+
+Atmin Sheth AI and Machine Learning Technologies
+
+Atmin Sheth has experience with TensorFlow, PyTorch, HuggingFace, Kaggle, OpenAI, and Botpress for machine learning model development and deployment. He uses these libraries for training models, data processing, and implementing AI solutions.
+
+Atmin Sheth Professional Organizations
+
+Atmin Sheth is an active member of Young Jains of America (YJA), Artificial Intelligence Society (AIS), and Association for Computing Machinery (ACM). He participates in leadership roles and mentoring activities within these professional organizations.
+
+Atmin Sheth knowledge
+
+Atmin Sheth has knowledge of Data structures and algorithms
+
+Atmin Sheth has worked with and knows abotu cloud like AWS, Azurre and Google cloud 
+
+Atmin Sheth has explore Google dialog as an option to chatbot he tain settled with Botpress as it was beneficial economincally 
+
+Atmin Sheth loves History and is always studying some parts of history 
+
+Atmin Shet knows about CICD pipeline and worked with in all of his projects for eXp Realty
+
+Things not in Atmin Sheth's resume 
+
+Atmin Sheth has multiple certifications
+
+Atmin Sheth has gotten a certification for Prompt engineering and Google's intro to GenAI  
+
+Atmin Sheth is working to get his AWS practicinor certification
+
+Atmin Sheth Personal Hobbies
+
+Atmin Sheth enjoys dance as a form of creative expression and physical activity. He plays soccer for team sports engagement and athletic development. Atmin practices rock climbing for adventure sports and physical challenges that build strength and problem-solving skills.
+
+Atmin Sheth Leadership Experience
+
+Atmin Sheth has demonstrated strong leadership skills through mentoring teams in AI projects and guiding students in data cleaning, model training, and performance analysis. He led technical decision-making in production environments at eXp Realty and successfully managed cross-functional collaboration in agile development environments.
