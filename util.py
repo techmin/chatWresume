@@ -9,6 +9,7 @@ from langchain_community.vectorstores import FAISS
 from langchain.chains import RetrievalQA
 from langchain_community.llms import Ollama
 from langchain.schema import Document
+from langchain_google_genai import ChatGoogleGenerativeAI
 
 def preprocess_query(query: str) -> str:
     """
@@ -285,7 +286,7 @@ def load_resume_and_create_retriever(file_path):
     
     return retriever
 
-def ask(query, retriever=None, file_path="AS_KB.txt", model="mistral"):
+def ask(query, retriever=None, file_path="AS_KB.txt", model="gemini"):
     """
     Ask a question and get a response based on the resume content.
     
@@ -313,8 +314,13 @@ def ask(query, retriever=None, file_path="AS_KB.txt", model="mistral"):
         
         # Create QA chain
         print(f"[INFO] Creating QA chain with model: {model}")
+        if model in ["gemini", "gemini-pro", "gemini-2.0-flash", "gemini-pro-vision"]:
+            llm = ChatGoogleGenerativeAI(model="gemini-pro")
+        else:
+            from langchain_community.llms import Ollama
+            llm = Ollama(model=model)
         qa_chain = RetrievalQA.from_chain_type(
-            llm=Ollama(model=model),
+            llm=llm,
             retriever=retriever,
             return_source_documents=False
         )
@@ -359,8 +365,13 @@ def ask_with_sources(query, retriever=None, file_path="AS_KB.txt", model="mistra
         
         # Create QA chain that returns source documents
         print(f"[INFO] Creating QA chain with model: {model}")
+        if model in ["gemini", "gemini-pro", "gemini-2.0-flash", "gemini-pro-vision"]:
+            llm = ChatGoogleGenerativeAI(model="gemini-pro")
+        else:
+            from langchain_community.llms import Ollama
+            llm = Ollama(model=model)
         qa_chain = RetrievalQA.from_chain_type(
-            llm=Ollama(model=model),
+            llm=llm,
             retriever=retriever,
             return_source_documents=True
         )

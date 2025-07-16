@@ -6,3 +6,4 @@ faiss-cpu
 pdfplumber
 flask
 flask-restx
+langchain-google-genai
