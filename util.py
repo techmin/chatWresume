@@ -2,14 +2,18 @@ import os
 import PyPDF2
 import re
 import string
-from typing import List
+from typing import List, Optional
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.embeddings import OllamaEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
 from langchain_community.vectorstores import FAISS
 from langchain.chains import RetrievalQA
-from langchain_community.llms import Ollama
 from langchain.schema import Document
-from langchain_google_genai import ChatGoogleGenerativeAI
+import time
+from dotenv import load_dotenv
+load_dotenv()
+
+# Set up your Google API key directly for local testing
+os.environ["GOOGLE_API_KEY"] = "AIzaSyA5L7DAqltJZTCo-Jj6g5uZPvlIEfyMj5A"
 
 def preprocess_query(query: str) -> str:
     """
@@ -109,7 +113,7 @@ def expand_query(query: str, llm=None) -> List[str]:
         expanded_queries.extend([
             query.replace('education', 'academic background'),
             query.replace('education', 'degrees'),
-            query.replace('education', 'qualifications')
+            query.replace( education', 'qualifications')
         ])
     
     # Add question variations
@@ -256,7 +260,17 @@ def extract_text_from_pdf_stream(file_path):
     except Exception as e:
         raise Exception(f"Error reading PDF file: {str(e)}")
 
-def load_resume_and_create_retriever(file_path):
+def load_resume_and_create_retriever(file_path, embedding_model="models/embedding-001"):
+    """
+    Load resume file and create a retriever using Gemini embeddings only.
+    
+    Args:
+        file_path (str): Path to the resume file
+        embedding_model (str): Google embedding model to use
+        
+    Returns:
+        tuple: (Retriever object, embedding_type_used)
+    """
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"File not found: {file_path}")
     print(f"[INFO] Loading file: {file_path}")
@@ -272,29 +286,33 @@ def load_resume_and_create_retriever(file_path):
 
     print(f"[INFO] Loaded {len(docs)} document(s) with content")
 
+    # Split documents into chunks
     splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
     chunks = splitter.split_documents(docs)
     chunks = [c for c in chunks if c.page_content.strip()]
     print(f"[INFO] Split into {len(chunks)} chunks")
 
-    embedding_model = OllamaEmbeddings(model="nomic-embed-text")
-    print("[INFO] Creating vector store embeddings...")
-    vectorstore = FAISS.from_documents(chunks, embedding_model)
+    print("[INFO] Using Google Gemini embeddings...")
+    embedding_model_obj = GoogleGenerativeAIEmbeddings(model=embedding_model)
+    vectorstore = FAISS.from_documents(chunks, embedding_model_obj)
+    embedding_type = "gemini"
+    print("[INFO] Successfully created embeddings with Google Gemini")
 
-    retriever = vectorstore.as_retriever(search_kwargs={"k": 1})
-    print("[INFO] Retriever created successfully")
+    retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
+    print(f"[INFO] Retriever created successfully using {embedding_type} embeddings")
     
-    return retriever
+    return retriever, embedding_type
 
-def ask(query, retriever=None, file_path="AS_KB.txt", model="gemini"):
+def ask(query, retriever=None, file_path="AS_KB.txt", model="gemini-2.0-flash-lite", temperature=0.1):
     """
-    Ask a question and get a response based on the resume content.
+    Ask a question using Gemini only.
     
     Args:
         query (str): The question to ask
         retriever: Optional pre-loaded retriever. If None, will load from file_path
         file_path (str): Path to the resume file (default: "AS_KB.txt")
-        model (str): Ollama model to use (default: "llama3")
+        model (str): Google Gemini model to use (default: "gemini-2.0-flash-lite")
+        temperature (float): Temperature for response generation (default: 0.1)
     
     Returns:
         str: The answer to the question
@@ -310,26 +328,28 @@ def ask(query, retriever=None, file_path="AS_KB.txt", model="gemini"):
         # Load retriever if not provided
         if retriever is None:
             print(f"[INFO] Loading retriever from {file_path}")
-            retriever = load_resume_and_create_retriever(file_path)
-        
-        # Create QA chain
-        print(f"[INFO] Creating QA chain with model: {model}")
-        if model in ["gemini", "gemini-pro", "gemini-2.0-flash", "gemini-pro-vision"]:
-            llm = ChatGoogleGenerativeAI(model="gemini-pro")
+            retriever, embedding_type = load_resume_and_create_retriever(file_path)
         else:
-            from langchain_community.llms import Ollama
-            llm = Ollama(model=model)
+            embedding_type = "unknown"
+        
+        print(f"[INFO] Trying Gemini model: {model}")
+        llm = ChatGoogleGenerativeAI(
+            model=model,
+            temperature=temperature,
+            convert_system_message_to_human=True
+        )
+        
         qa_chain = RetrievalQA.from_chain_type(
             llm=llm,
             retriever=retriever,
-            return_source_documents=False
+            return_source_documents=False,
+            chain_type="stuff"
         )
         
-        # Get response with processed query
-        print(f"[INFO] Processing preprocessed query: {processed_query}")
         response = qa_chain.run(processed_query)
-        print(f"[INFO] Response generated successfully")
-        
+        model_used = f"gemini-{model}"
+        print(f"[INFO] Response generated successfully with Gemini")
+        print(f"[INFO] Final response generated using: {model_used}")
         return response
         
     except Exception as e:
@@ -337,18 +357,19 @@ def ask(query, retriever=None, file_path="AS_KB.txt", model="gemini"):
         print(f"[ERROR] {error_msg}")
         return f"Sorry, I encountered an error while processing your question: {str(e)}"
 
-def ask_with_sources(query, retriever=None, file_path="AS_KB.txt", model="mistral"):
+def ask_with_sources(query, retriever=None, file_path="AS_KB.txt", model="gemini-2.0-flash-lite", temperature=0.1):
     """
-    Ask a question and get a response with source documents.
+    Ask a question and get a response with source documents using Gemini only.
     
     Args:
         query (str): The question to ask
         retriever: Optional pre-loaded retriever. If None, will load from file_path
         file_path (str): Path to the resume file (default: "AS_KB.txt")
-        model (str): Ollama model to use (default: "llama3")
+        model (str): Google Gemini model to use (default: "gemini-2.0-flash-lite")
+        temperature (float): Temperature for response generation (default: 0.1)
     
     Returns:
-        tuple: (answer, source_documents)
+        tuple: (answer, source_documents, model_used)
     """
     try:
         # Preprocess the query
@@ -361,32 +382,108 @@ def ask_with_sources(query, retriever=None, file_path="AS_KB.txt", model="mistra
         # Load retriever if not provided
         if retriever is None:
             print(f"[INFO] Loading retriever from {file_path}")
-            retriever = load_resume_and_create_retriever(file_path)
-        
-        # Create QA chain that returns source documents
-        print(f"[INFO] Creating QA chain with model: {model}")
-        if model in ["gemini", "gemini-pro", "gemini-2.0-flash", "gemini-pro-vision"]:
-            llm = ChatGoogleGenerativeAI(model="gemini-pro")
+            retriever, embedding_type = load_resume_and_create_retriever(file_path)
         else:
-            from langchain_community.llms import Ollama
-            llm = Ollama(model=model)
+            embedding_type = "unknown"
+        
+        print(f"[INFO] Trying Gemini model: {model}")
+        llm = ChatGoogleGenerativeAI(
+            model=model,
+            temperature=temperature,
+            convert_system_message_to_human=True
+        )
+        
         qa_chain = RetrievalQA.from_chain_type(
             llm=llm,
             retriever=retriever,
-            return_source_documents=True
+            return_source_documents=True,
+            chain_type="stuff"
         )
         
-        # Get response with sources using processed query
-        print(f"[INFO] Processing preprocessed query: {processed_query}")
         result = qa_chain({"query": processed_query})
+        model_used = f"gemini-{model}"
+        print(f"[INFO] Response generated successfully with Gemini")
+        
         answer = result["result"]
         source_documents = result["source_documents"]
         
-        print(f"[INFO] Response generated successfully with {len(source_documents)} source documents")
+        print(f"[INFO] Response generated successfully with {len(source_documents)} source documents using: {model_used}")
         
-        return answer, source_documents
+        return answer, source_documents, model_used
         
     except Exception as e:
         error_msg = f"Error processing query: {str(e)}"
         print(f"[ERROR] {error_msg}")
-        return f"Sorry, I encountered an error while processing your question: {str(e)}", []
+        return f"Sorry, I encountered an error while processing your question: {str(e)}", [], "error"
+
+# Configuration for fallback behavior
+GEMINI_RATE_LIMIT_ERRORS = [
+    "quota exceeded",
+    "rate limit",
+    "429",
+    "resource_exhausted",
+    "quota_exceeded",
+    "rate_limit_exceeded"
+]
+
+def is_rate_limit_error(error_msg: str) -> bool:
+    """Check if error message indicates a rate limit or quota issue"""
+    error_lower = str(error_msg).lower()
+    return any(err in error_lower for err in GEMINI_RATE_LIMIT_ERRORS)
+
+def setup_google_api_key(api_key=None):
+    """
+    Setup Google API key for Gemini access.
+    
+    Args:
+        api_key (str, optional): Your Google API key. If None, will try to get from environment.
+    """
+    if api_key:
+        api_key = os.environ["GOOGLE_API_KEY"] 
+        print("[INFO] Google API key set successfully")
+    elif "GOOGLE_API_KEY" not in os.environ:
+        print("[WARNING] Google API key not found in environment variables.")
+        print("Please set your API key using: setup_google_api_key('your-api-key-here')")
+        print("Or set the GOOGLE_API_KEY environment variable")
+
+# Example usage functions
+def example_usage():
+    """
+    Example of how to use the chatbot with Google Gemini.
+    """
+    # Setup API key (you need to do this first)
+    # setup_google_api_key("your-google-api-key-here")
+    
+    # Load resume and create retriever
+    file_path = "your_resume.pdf"  # or "your_resume.txt"
+    
+    try:
+        retriever = load_resume_and_create_retriever(file_path)
+        
+        # Ask questions
+        questions = [
+            "What are the main skills mentioned in this resume?",
+            "What is the work experience?",
+            "What education background is mentioned?",
+            "What projects are described?",
+            "What programming languages are mentioned?"
+        ]
+        
+        for question in questions:
+            print(f"\n[QUESTION] {question}")
+            answer = ask(question, retriever=retriever)
+            print(f"[ANSWER] {answer}")
+            
+            # Optional: Get sources too
+            answer_with_sources, sources, _ = ask_with_sources(question, retriever=retriever)
+            print(f"[SOURCES] Found {len(sources)} relevant document chunks")
+            
+    except Exception as e:
+        print(f"Error in example usage: {str(e)}")
+
+if __name__ == "__main__":
+    print("Resume Chatbot with Google Gemini")
+    print("Make sure to set your Google API key before using!")
+    
+    # Uncomment the line below to run the example
+    # example_usage()
